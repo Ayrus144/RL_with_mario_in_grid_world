@@ -6,15 +6,9 @@ class GridWorld:
         Arguments:
             x: length of gridworld
             y: width of gridworld
-            blocked_states: states blocked from access to agent "Mario"
-            end_states: states where the game terminates
+            blocked_states: list of states blocked from access to agent "Mario"
+            end_states: list of states where the game terminates
             controller_reliability: reliablity of controller expressed as probability
-
-        Optional setters:
-            def set_rewards(reward_dict, other_states = 0.0, transition_reward = 0.0)
-                reward_dict: {key = state: value = intended reward for state}
-                other_states: intended reward for states other than those mentioned in reward_dict
-                transition_reward: reward for transition from current_state(s) to new_state(s') --> common for all states
 
         Default rewards:
             B: blocked states (default env setup)
@@ -50,6 +44,14 @@ class GridWorld:
     #     return self.ydim-y, x-1
     
     def set_rewards(self, reward_dict, other_states = 0.0, transition_reward = 0.0):
+        """
+        Optional setter:
+            def set_rewards(reward_dict, other_states = 0.0, transition_reward = 0.0)
+                reward_dict: {key = state: value = intended reward for state}
+                other_states: intended reward for states other than those mentioned in reward_dict
+                transition_reward: reward for transition from current_state(s) to new_state(s') --> common for all states
+
+        """
         for i, state in enumerate(self.valid_states):
             if state in reward_dict:
                 self.rewards[state] = reward_dict[state] + transition_reward
@@ -66,6 +68,7 @@ class GridWorld:
             print()
 
     def transition_probs(self, state, action):
+        """Take any (state, action) pair and return transition probabilities to all valid transition states"""
         # transverse actions (in list form) 
         transverse_action_1 = np.flip(action)
         transverse_action_2 = [-i for i in transverse_action_1]
