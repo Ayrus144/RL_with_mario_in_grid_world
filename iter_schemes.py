@@ -17,6 +17,10 @@ class Iter:
         self.tolerance = tol
 
     def expected_Q_value(self, state, action):
+        """
+        Helper function: Used for helper functions "state_value_greedy" and "state_value_policy"
+        Take any (state, action) pair and return expected Q value based on (expected) state values in previous iteration
+        """
         q_value = 0
         if state in self.env.end_states:
             return q_value
@@ -26,7 +30,7 @@ class Iter:
             prob = transition_probs[new_state]
             reward = self.env.rewards[new_state]
             gamma = self.agent.gamma
-            # state value at the new state as calulated in previous iteration
+            # state value at the new_state (newly possible transition state) as calulated in previous iteration
             prev_iter_state_value = self.agent.state_values[new_state] 
             q_value += prob * (reward + gamma* prev_iter_state_value)
         # Gauss seidel variety would be wrong (unstable)
@@ -34,6 +38,10 @@ class Iter:
         return q_value
 
     def state_value_greedy(self, state):
+        """
+        Helper function: Used for helper function "state_value_policy" and function "by_value_iter"
+        Take any state and return the maximum Q-value and corresponding action as a pair
+        """
         state_value = 0
         best_action = 'bug'
         Q_values= {}
@@ -44,12 +52,22 @@ class Iter:
         return state_value, best_action # return best action too
     
     def state_value_policy(self, state):
+        """
+        Helper function: Used for function "by_policy_iter"
+        Take any state and return the 
+            Q-value based on (state, action) pair using current policy, and 
+            best/ greedy action (corresponding to maximum Q-value) 
+        as a pair
+        """
         action, _ = self.agent.policy[state]
         policy_value = self.expected_Q_value(state, action)
         _, best_action = self.state_value_greedy(state)
         return policy_value, best_action # return best action too
     
     def by_value_iter(self, show_updates = False, anim = False):
+        """
+        Calculate Optimal Policy using Value Iteration
+        """
         iter = 0
         val_error = np.ones(len(self.env.valid_states))
         while val_error.max() > self.tolerance: 
@@ -84,6 +102,9 @@ class Iter:
             # We don't use this policy in our subsequent calculation anywhere
 
     def by_policy_iter(self, show_updates = False, anim=False):
+        """
+        Calculate Optimal Policy using Policy Iteration
+        """
         epoch = 0 # counts number of policies tried
         total_steps = 0
         while True:
@@ -127,6 +148,7 @@ class Iter:
             else:
                 break
     
+# IGNORE: used for testing
 if __name__ == "__main__":
     # Hover over the class initializers for more info (VS code)
     env   = GridWorld()
