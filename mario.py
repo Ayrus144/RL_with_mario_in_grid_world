@@ -8,9 +8,6 @@ class Mario:
             env: object of class "GridWorld" over which agent "Mario" is intended to learn policy on
             gamma: value discount you want the agent "Mario" to learn the state-values with
 
-        Optional setters: (to make)
-            def set_policy(policy_dict, other_states = 0.0, transition_reward = 0.0)
-
         Default Policy:
             B: blocked states (default env setup)
             v: move down
